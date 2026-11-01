@@ -648,9 +648,27 @@ def shot_B(t):
 
 
 # ------------------------------------------------------------------ frame
+AI_DIR = os.path.join(BUILD, "ai_A")
+AI_END = 5.75  # painted frames cover 0-5.75 s; the last one holds under the passing cloth
+
+
+def ai_frame(t):
+    """Painted (AI-repainted) opening frame for time t, if prepared by composite_ai.py."""
+    if not os.path.isdir(AI_DIR):
+        return None
+    files = sorted(os.listdir(AI_DIR))
+    if not files:
+        return None
+    k = min(int(round(min(t, AI_END) * FPS)), len(files) - 1)
+    return Image.open(os.path.join(AI_DIR, files[k])).convert("RGBA")
+
+
 def render(i):
     t = i / FPS
-    if t < T_AB:
+    ai = ai_frame(t) if t < T_AB else None
+    if ai is not None:
+        frame = ai
+    elif t < T_AB:
         cam, ref = cam_A(t)
         frame = shot_wide(t, cam, ref, 1.0, -(cam.top - 200) * 0.10, True)
     elif t < T_BC:
