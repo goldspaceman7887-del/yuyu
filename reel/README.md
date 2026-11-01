@@ -42,27 +42,33 @@ cd .. && ffmpeg -y -i build/video.mp4 -i build/audio.wav -map 0:v -map 1:a -c:v 
 ```
 `python3 render.py stills 7.2 14.9` renders single frames, useful for checking changes.
 
-## Optional: higher-fidelity version with an image/video model
-This version is a procedural illustration. For a richer, hand-painted look, generate the plates
-below with a model, keep **all text as overlays** (from `subtitles_ja.srt` and the positions
-above), and reuse `soundtrack.wav` and the timeline.
+## Painted version (AI repaint of this reel)
+The procedural render acts as the **layout and timing master**. Each shot is exported without
+text and sent to a video model as a video-to-video "repaint". Composition, camera move, timing
+and object placement stay locked, and only the rendering style changes. The Japanese text and
+`soundtrack.wav` are then composited back on top, so the wording stays exact.
 
-*Style line for every prompt:* original nostalgic Japanese summer illustration, hand-inked
-environmental background art, softly painted cel-animation colour, fine imperfect charcoal-brown
-linework, subtle paper texture, muted summer blue, cream clouds with pale blue-grey shadows,
-faded vermilion, weathered tan wood, moss green, small touches of muted teal, no text, no
-people, no faces, no signage lettering, not photoreal, not 3D.
+1. Export a clean shot: `NOTEXT=1 python3 render.py stills <t>` for single frames. For a clip,
+   see the snippet used for `gen/src_A_notext.mp4` (frames 0–171 = 0–5.73 s, opening shot).
+2. Make it reachable at a public MP4 URL (this repo is public, so the raw GitHub URL works).
+3. Repaint it. Used here: vidIQ `generate_video`, model `minimax-h3`, 768p, 9:16, with the
+   source clip passed as `videoUrls`. **Cost: 80 credits for 6 s.** Prompt:
 
-1. **Plate A (wide, extra tall, about 1240×3000):** a monumental cumulus cloud rising from a very
-   low horizon over a flat summer field. A small weathered wooden coffee cart sits in the lower
-   third: pale thatched roof, dark posts, faded red front panel with a lighter repaired plank,
-   glass jars, a kettle, cups, potted plants at its feet, a teal Japanese step-through bicycle
-   with a front basket leaning at the left, and a blank cream vertical banner on a bamboo pole
-   at the right.
-2. **Plate B (close-up):** the same cart's worn wooden counter seen from the front, with a
-   butterfly-key repair. A pale ceramic mug with a teal drip glaze sits on a wooden saucer, and
-   a small closed navy cloth-bound book lies beside it. A kettle and glass jars stand at the back,
-   with the same cloud and field visible through the open back of the stand.
-3. **Animation:** subtle motion only (grass, banner sway, steam, slow cloud drift), with
-   multiplane parallax. Add the hand opening the book as a short 1.6 s insert. Add the 聖書
-   cover title and all captions in compositing, never in generation.
+> Repaint this exact video as a lovingly hand-painted nostalgic Japanese summer background
+> illustration that has quietly begun to move. Keep the same composition, the same slow
+> downward camera drift and gentle push-in, the same timing, and the same objects in the same
+> places (cumulus cloud, low horizon, coffee cart with thatched roof and faded vermilion panel,
+> jars, kettle, cups, potted plants, teal step-through bicycle, cream banner on a bamboo pole).
+> Fine imperfect charcoal-brown linework, softly painted cel colour, ivory clouds with pale
+> blue-grey shadows, wood grain, individual grass blades, paper texture, amber light from the
+> upper left. Subtle motion only. No people, faces, text, letters, writing, watermarks or new
+> objects. Not photoreal, not 3D, no neon, no lens flares.
+
+4. Upscale the result to 1080×1920, cut it into the timeline in place of the procedural shot,
+   then re-apply the text layers and soundtrack (`render.py` text code, or `subtitles_ja.srt`
+   in any editor).
+
+Shots and source ranges: **A** 0.0–6.25 s (opening wide), **B** 6.25–12.55 s (counter close-up
+and Bible), **C** 12.55–15.0 s (closing wide; the model needs at least 4 s, so repaint 11.0–15.0
+or reuse the last seconds of A). If the model redraws the hand or the 聖書 cover badly, keep
+the procedural version of that part of shot B.
