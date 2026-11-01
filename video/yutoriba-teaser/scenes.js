@@ -844,7 +844,7 @@ function scene5(g, t) { // t = absolute time
   const lt = t - 12;
   const p = ease(lt / 2.2);
   const zoom = lerp(1.2, 1.0, p);
-  const cx = 540, cy = lerp(1180, 960, p);
+  const cx = 540, cy = lerp(1110, 960, p);
   drawLayer(g, L.dusk, cx, cy, zoom);
   g.save(); camApply(g, cx, cy, zoom);
   for (const w of S5.windows) {
