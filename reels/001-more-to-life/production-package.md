@@ -111,7 +111,7 @@ A wide interior. A window table in the foreground right has **one empty wooden c
 | T1 | 1A–1B | 毎日、ちゃんと生きている。 | 毎日、／ちゃんと生きている。 (stage 1: 毎日、 · stage 2: rest) | Horizontal | 毎日、 0.15 s (f4) → ちゃんと生きている。 0.60 s (f14) → out 2.35 s (f56) |
 | T2 | 2A–2B | やるべきことも、やっている。 | やるべきことも、／やっている。 | Horizontal | 2.70 s (f65) → second line 3.20 s (f77) → out 4.85 s (f116) |
 | T3 | 3A–3B | それなのに、時々思う。 | それなのに、／時々思う。 (two vertical columns, read right to left) | **Vertical (縦書き)** | 5.30 s (f127) → out 7.20 s (f173) |
-| T4 | 4A | 人生は、本当にこれだけだろうか。 | 人生は、／本当にこれだけだろうか。 | Horizontal | 人生は、 8.00 s (f192) → rest 8.50 s (f204) → out 11.30 s (f271) |
+| T4 | 4A | 人生は、本当にこれだけだろうか。 | 人生は、本当に／これだけだろうか。 (keeps both lines inside the 800 px safe width at 76 px) | Horizontal | line 1 8.00 s (f192) → line 2 8.50 s (f204) → out 11.30 s (f271) |
 | T5 | 5B–5C | あなたは、どう思いますか？ | あなたは、／どう思いますか？ | Horizontal | 12.40 s (f298) → holds to end (f359) |
 | — | 5C | ゆとりば | single line, wordmark | Horizontal | 13.75 s (f330) → end |
 
@@ -233,7 +233,7 @@ Canvas 1080 × 1920. Gutters: **18 px**, paper white `#F4F1EA` (day scenes) or i
 └──────┴───────────────┘          └──────────────────┘
  left col 40% / right 60%          reflection panel scaled to full bleed
 ```
-- T1 sits in a **manga narration box** (cream `#F2EBDD` box, 2 px ink border) placed inside the reflection panel at y ≈ 380–560.
+- T1 sits in a **manga narration box** (cream `#F2EBDD` box, 2 px ink border) low in the safe zone at y ≈ 1140–1395, so it never covers Sora's face during the push-in.
 
 ```
 2A / 2B  EXPECTATIONS (6 panels assembled)
@@ -268,8 +268,8 @@ Canvas 1080 × 1920. Gutters: **18 px**, paper white `#F4F1EA` (day scenes) or i
 4A  SPLASH (full bleed, no borders)
 ┌──────────────────────┐
 │        SKY           │  muted blue gradient
-│     人生は、          │  T4 at y ≈ 640–900, centered
-│ 本当にこれだけだろうか。│  white #F4F1EA, no box
+│   人生は、本当に      │  T4 at y ≈ 640–900, centered
+│  これだけだろうか。   │  cream #F2EBDD, no box
 │                      │
 │ ───── gold line ──── │  horizon y ≈ 1230
 │ skyline / viaduct    │
@@ -286,7 +286,7 @@ Canvas 1080 × 1920. Gutters: **18 px**, paper white `#F4F1EA` (day scenes) or i
 │ opens ▶│   │ AOI looks up     │    │ lamp   window    │
 │ amber  │   │  Ren reading BG  │    │ ▒Sora  EMPTY     │
 │ light  │   │ [T5 enters here] │    │ ▒back  CHAIR     │
-└────────┘   └──────────────────┘    │      ゆとりば     │ wordmark y≈1330
+└────────┘   └──────────────────┘    │      ゆとりば     │ wordmark (rendered at y≈830, directly under T5)
                                      └──────────────────┘
 ```
 - T5 keeps the **same screen position** across 5B and 5C, so the image changes underneath while the question stays put.
@@ -650,3 +650,24 @@ preserve the black-and-white ink manga linework and screentone exactly, no morph
 | Yutoriba subtle | ✅ Wordmark only, last 1.25 s, fade only; tagline moved to caption |
 | Works with and without sound | ✅ No VO; text and image carry the full arc |
 | Ending reflective, warm, hopeful | ✅ Amber light, open door, unresolved chord |
+
+---
+
+## Appendix · Rendered reel (v1)
+
+The rendered video is `reels/001-more-to-life/yutoriba-reel-001.mp4`, built from the code in `build/`.
+
+**Output specs**
+- 15.000 s, 360 frames, 1080 × 1920, 24 fps
+- H.264 High (2-pass, 14 Mbps target / 20 Mbps max), AAC 320 kbps 48 kHz
+- Audio at −14 LUFS integrated
+- Cover image: `cover.jpg` (frame 230)
+
+**How it's built**
+- The artwork is drawn in code: ink-brush strokes, screentones, paper texture and grain are rendered on an HTML canvas in headless Chromium.
+- The audio is synthesized (felt piano and environmental sound, following §12).
+- To rebuild, see `build/README.md`.
+
+**Differences from the AI-illustration pipeline in §15–16**
+- This version is a complete, postable reel in a simplified seinen-manga register.
+- It does not have the hand-drawn detail a human illustrator or the §15 generation prompts would produce. The same timing, text and sound can be kept if the panels are later swapped for illustrated art.
