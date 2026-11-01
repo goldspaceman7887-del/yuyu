@@ -9,6 +9,7 @@ Transitions come from objects in the scene: the banner cloth crosses the lens (A
 foreground grass passes the lens (B->C).
 """
 import math
+import os
 import random
 import subprocess
 import sys
@@ -670,7 +671,8 @@ def render(i):
     if 12.1 <= t <= 13.05:
         x = 540 + (t - T_BC) / 0.38 * 1250
         frame.alpha_composite(R["curtain"], (int(x - R["curtain"].width / 2), 0))
-    text_layer(frame, t, R["text"])
+    if not os.environ.get("NOTEXT"):
+        text_layer(frame, t, R["text"])
     arr = np.asarray(frame.convert("RGB")).astype(np.float32)
     arr = arr * R["paper"]
     arr = arr * 0.965 + 6.0
