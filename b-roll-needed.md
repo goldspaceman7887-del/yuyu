@@ -18,3 +18,6 @@
 - Train stations
 - University campuses
 - Street scenes
+- Small stalls or coffee carts under open sky (low angle)
+- Summer cumulus clouds (time-lapse)
+- Bicycles parked outside cafés
