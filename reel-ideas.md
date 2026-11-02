@@ -7,7 +7,6 @@
 - Best cafes near Tokyo universities
 - What loneliness teaches us
 - Why slowing down matters
-- Room to breathe: a small place under a big sky (see below)
 
 ## Room to Breathe (from moodboard: roadside stall)
 
@@ -26,5 +25,8 @@
 ## Filmed
 
 ## Edited
+
+- Room to Breathe: finished as a 15 s animated Japanese reel (ゆとりば, John 14:6).
+  File: `reel/yutoriba_reel_15s.mp4`, caption in `reel/caption_ja.txt`. Listen once, then post.
 
 ## Posted
