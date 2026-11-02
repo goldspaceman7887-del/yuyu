@@ -59,9 +59,8 @@ def draw_pot(p, x0, y0, x1, y1, rng):
     p.poly([(cx, y0), (cx + 5, y0), (cx + 3, y0 + 3)], (214, 160, 128), None)
 
 
-def draw_bike(p):
+def draw_bike(p, frame=TEAL):
     R, F, r = (225.0, 2662.0), (485.0, 2662.0), 78.0
-    frame = TEAL
     for (cx, cy) in (R, F):
         # tyre, rim, spokes
         p.ellipse((cx - r, cy - r, cx + r, cy + r), None, (58, 58, 60), 3.2, 0.25)
@@ -206,7 +205,7 @@ def draw_field(p, y_hor, y_bot, x0, x1, rng, n_blades, near_len=26):
                        (xx + math.cos(a) * L + 2, y + math.sin(a) * L)], col + (235,), lerp(0.4, 1.1, t))
 
 
-def draw_stand_A(p, rng):
+def draw_stand_A(p, rng, front=None, bike=True):
     # ground shadow
     p.ellipse((440, 2722, 970, 2764), (58, 82, 42, 120), None)
     # bamboo pole (behind banner)
@@ -324,19 +323,26 @@ def draw_stand_A(p, rng):
     draw_pot(p, 1016, 2702, 1066, 2752, rng)
     draw_plant(p, 1041, 2703, 84, 1.2, 18, rng, "fern")
     # bicycle, then the front-left pots that sit in front of it
-    draw_bike(p)
-    draw_pot(p, 548, 2700, 604, 2750, rng)
-    draw_plant(p, 576, 2701, 92, 1.1, 20, rng, "round")
-    draw_pot(p, 610, 2716, 646, 2752, rng)
-    draw_plant(p, 628, 2717, 70, 0.45, 9, rng, "long")
+    # (front= draws those pots on a separate layer so a moving bicycle can pass between)
+    if bike:
+        draw_bike(p)
+    q = front or p
+    draw_pot(q, 548, 2700, 604, 2750, rng)
+    draw_plant(q, 576, 2701, 92, 1.1, 20, rng, "round")
+    draw_pot(q, 610, 2716, 646, 2752, rng)
+    draw_plant(q, 628, 2717, 70, 0.45, 9, rng, "long")
 
 
-def build_A_ground():
+def build_A_ground(split=False):
+    """split=True: ground without the bicycle (A_ground_nobike.png) plus the pots and
+    grass that sit in front of it on their own layer (A_front.png)."""
     gw, gh = AW, AH - G_OY
     p = Pen((int(gw * S), int(gh * S)), S, (0, G_OY), seed=5)
     rng = random.Random(42)
     draw_field(p, A_HOR, AH, 0, AW, rng, 26000)
-    draw_stand_A(p, rng)
+    pf = Pen((int(gw * S), int(gh * S)), S, (0, G_OY), seed=6) if split else None
+    draw_stand_A(p, rng, front=pf, bike=not split)
+    q = pf or p
     # static foreground blades over the base of the stand, pots and wheels
     for _ in range(1400):
         x = rng.uniform(0, AW)
@@ -344,8 +350,12 @@ def build_A_ground():
         L = rng.uniform(10, 30)
         a = -math.pi / 2 + rng.uniform(-0.4, 0.4)
         col = lerpc(GRASS_NEAR, GRASS_LIGHT if rng.random() < 0.5 else GRASS_DARK, rng.random() * 0.6)
-        p.simple_line([(x, y), (x + math.cos(a) * L, y + math.sin(a) * L)], col + (235,), 0.9)
-    down(p.result()).save(f"{BUILD}/A_ground.png")
+        q.simple_line([(x, y), (x + math.cos(a) * L, y + math.sin(a) * L)], col + (235,), 0.9)
+    if split:
+        down(p.result()).save(f"{BUILD}/A_ground_nobike.png")
+        down(pf.result()).save(f"{BUILD}/A_front.png")
+    else:
+        down(p.result()).save(f"{BUILD}/A_ground.png")
 
 
 def build_banner():
@@ -360,6 +370,17 @@ def build_banner():
         p.simple_line([(x, y), (x + rng.uniform(-2, 2), y + rng.uniform(10, 40))], (200, 190, 166, 120), 0.5)
     p.text_v("ひとやすみ", bw / 2, 34, 44, (52, 58, 76), True)
     down(p.result()).save(f"{BUILD}/banner.png")
+
+
+BIKE_ORIGIN = (130, 2470)
+
+
+def build_bike(name="bike", frame=TEAL):
+    """The bicycle alone, as a sprite whose top-left sits at BIKE_ORIGIN in world A."""
+    ox, oy = BIKE_ORIGIN
+    p = Pen((int(430 * S), int(290 * S)), S, (ox, oy), seed=31)
+    draw_bike(p, frame)
+    down(p.result()).save(f"{BUILD}/{name}.png")
 
 
 # =========================================================== world B (close-up)
@@ -504,3 +525,8 @@ if __name__ == "__main__":
         build_B_bg(); print("B_bg")
     if "bstand" in which:
         build_B_stand(); print("B_stand")
+    if "split" in which:
+        build_A_ground(split=True); print("A_ground_nobike + A_front")
+    if "bikes" in which:
+        build_bike("bike", TEAL)
+        build_bike("bike2", (190, 150, 92)); print("bike sprites")
