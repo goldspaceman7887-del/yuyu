@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="fonts/500.css"><link rel="stylesheet" href="fonts/600.css">
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="engine.js"></script><script src="characters.js"></script><script src="scenes.js"></script>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+window.ready = (async () => {
+  const strs = ['毎日、ちゃんと生きている。','やるべきことも、やっている。','それなのに、時々思う。','人生は、本当にこれだけだろうか。','あなたは、どう思いますか？','ゆとりば'];
+  for (const w of [500, 600]) for (const s of strs) await document.fonts.load(`${w} 64px "Shippori Mincho B1"`, s);
+  await document.fonts.ready;
+  initTextures(); initScenes();
+  return document.fonts.check('500 64px "Shippori Mincho B1"', '人生');
+})();
+</script></body></html>
