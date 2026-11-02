@@ -68,6 +68,14 @@ and object placement stay locked, and only the rendering style changes. The Japa
    then re-apply the text layers and soundtrack (`render.py` text code, or `subtitles_ja.srt`
    in any editor).
 
+**Test result (opening shot, minimax-h3, 80 credits): not used.** The clip did not follow the
+source. It started on the stand instead of the sky, then pushed in. From about 2.5 s the banner
+filled with invented pseudo-Chinese characters ("龙大文茶茶"), and the menu card 珈琲 became
+nonsense. After about 3.5 s the grass turned yellow, the light went golden and the bicycle
+changed shape. Only the first ~2 s were clean. If you retry, check every frame for invented
+writing, and expect to use only short clean stretches. `composite_ai.py` + `render.py` will
+take any clip that passes.
+
 Shots and source ranges: **A** 0.0–6.25 s (opening wide), **B** 6.25–12.55 s (counter close-up
 and Bible), **C** 12.55–15.0 s (closing wide; the model needs at least 4 s, so repaint 11.0–15.0
 or reuse the last seconds of A). If the model redraws the hand or the 聖書 cover badly, keep
